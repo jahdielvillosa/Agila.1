@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="RpiModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="RpiModelStoreContainer">
+    <EntitySet Name="RpiDevices1" EntityType="RpiModel.Store.RpiDevices1" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RpiDatalogs" EntityType="RpiModel.Store.RpiDatalogs" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RpiControls1" EntityType="RpiModel.Store.RpiControls1" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="DeviceControl" Association="RpiModel.Store.DeviceControl">
+      <End Role="RpiDevice" EntitySet="RpiDevices1" />
+      <End Role="RpiControl" EntitySet="RpiControls1" />
+    </AssociationSet>
+    <AssociationSet Name="DeviceData" Association="RpiModel.Store.DeviceData">
+      <End Role="RpiDevice" EntitySet="RpiDevices1" />
+      <End Role="RpiDatalog" EntitySet="RpiDatalogs" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="RpiDevices1">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RpiDatalogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DtRead" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DataRead" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DeviceId" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Device_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RpiControls1">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DtSchedule" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Data" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DeviceId" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Device_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="DeviceControl">
+    <End Role="RpiDevice" Type="RpiModel.Store.RpiDevices1" Multiplicity="1" />
+    <End Role="RpiControl" Type="RpiModel.Store.RpiControls1" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RpiDevice">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RpiControl">
+        <PropertyRef Name="Device_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="DeviceData">
+    <End Role="RpiDevice" Type="RpiModel.Store.RpiDevices1" Multiplicity="1" />
+    <End Role="RpiDatalog" Type="RpiModel.Store.RpiDatalogs" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RpiDevice">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RpiDatalog">
+        <PropertyRef Name="Device_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

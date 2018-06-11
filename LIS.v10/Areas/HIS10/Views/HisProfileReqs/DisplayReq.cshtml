@@ -1,0 +1,61 @@
+﻿@model IEnumerable<LIS.v10.Areas.HIS10.Models.HisProfileReq>
+
+@{
+    ViewBag.Title = "Requests";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Requests</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+
+    @foreach (var item in Model)
+    {
+
+        <tr>
+            <td valign="top">
+                <span style="font: bold 14px calibre, verdana;">
+                    @item.HisProfile.Name
+                </span>
+                <span style="font-size:smaller">
+                    <br />@Html.DisplayFor(modelItem => item.HisRequest.Title)
+                    <br />@item.Remarks
+                </span>
+            </td>
+            <td valign="top">
+                <span style="font-size:smaller">
+                    Requested:@Html.DisplayFor(modelItem => item.dtRequested)
+                    <br />Scheduled:@Html.DisplayFor(modelItem => item.dtSchedule)
+                    <br />Performed:@Html.DisplayFor(modelItem => item.dtPerformed)
+                </span>
+
+            </td>
+            <td valign="top">
+                <span>Notification </span>
+                @if (@Html.Action("hasNotif", new { id = item.Id }).ToString() == "0")
+                {
+                    <br />@Html.ActionLink("Generate", "Create", "HisNotifications", new { id = item.Id }, null)
+
+                }
+                else
+                {
+                    <br />@Html.ActionLink("View", "Details", "HisNotifications", new { id = item.Id }, null)
+                }
+
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+
+    }
+
+</table>
+
+<p>
+    @Html.ActionLink("Back to Profile List", "Index", "HisProfiles", new { area = "HIS10" }, null)
+</p>

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="RpiModelStoreContainer" CdmEntityContainer="RpiModelContainer">
+    <EntitySetMapping Name="RpiDevices1">
+      <EntityTypeMapping TypeName="IsTypeOf(RpiModel.RpiDevice)">
+        <MappingFragment StoreEntitySet="RpiDevices1">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RpiDatalogs">
+      <EntityTypeMapping TypeName="IsTypeOf(RpiModel.RpiDatalog)">
+        <MappingFragment StoreEntitySet="RpiDatalogs">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="DtRead" ColumnName="DtRead" />
+          <ScalarProperty Name="DataRead" ColumnName="DataRead" />
+          <ScalarProperty Name="DeviceId" ColumnName="DeviceId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RpiControls1">
+      <EntityTypeMapping TypeName="IsTypeOf(RpiModel.RpiControl)">
+        <MappingFragment StoreEntitySet="RpiControls1">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="DtSchedule" ColumnName="DtSchedule" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+          <ScalarProperty Name="DeviceId" ColumnName="DeviceId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="DeviceControl" TypeName="RpiModel.DeviceControl" StoreEntitySet="RpiControls1">
+      <EndProperty Name="RpiDevice">
+        <ScalarProperty Name="Id" ColumnName="Device_Id" />
+      </EndProperty>
+      <EndProperty Name="RpiControl">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="DeviceData" TypeName="RpiModel.DeviceData" StoreEntitySet="RpiDatalogs">
+      <EndProperty Name="RpiDevice">
+        <ScalarProperty Name="Id" ColumnName="Device_Id" />
+      </EndProperty>
+      <EndProperty Name="RpiDatalog">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping>

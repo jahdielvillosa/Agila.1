@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="RpiModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+  <EntityContainer Name="RpiModelContainer" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="RpiDevices1" EntityType="RpiModel.RpiDevice" />
+    <EntitySet Name="RpiDatalogs" EntityType="RpiModel.RpiDatalog" />
+    <EntitySet Name="RpiControls1" EntityType="RpiModel.RpiControl" />
+    <AssociationSet Name="DeviceControl" Association="RpiModel.DeviceControl">
+      <End Role="RpiDevice" EntitySet="RpiDevices1" />
+      <End Role="RpiControl" EntitySet="RpiControls1" />
+    </AssociationSet>
+    <AssociationSet Name="DeviceData" Association="RpiModel.DeviceData">
+      <End Role="RpiDevice" EntitySet="RpiDevices1" />
+      <End Role="RpiDatalog" EntitySet="RpiDatalogs" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="RpiDevice">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Description" Type="String" Nullable="false" />
+    <NavigationProperty Name="Controls" Relationship="RpiModel.DeviceControl" FromRole="RpiDevice" ToRole="RpiControl" />
+    <NavigationProperty Name="Data" Relationship="RpiModel.DeviceData" FromRole="RpiDevice" ToRole="RpiDatalog" />
+  </EntityType>
+  <EntityType Name="RpiDatalog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DtRead" Type="String" Nullable="false" />
+    <Property Name="DataRead" Type="String" Nullable="false" />
+    <Property Name="DeviceId" Type="String" Nullable="false" />
+    <NavigationProperty Name="Device" Relationship="RpiModel.DeviceData" FromRole="RpiDatalog" ToRole="RpiDevice" />
+  </EntityType>
+  <EntityType Name="RpiControl">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DtSchedule" Type="String" Nullable="false" />
+    <Property Name="Data" Type="String" Nullable="false" />
+    <Property Name="DeviceId" Type="String" Nullable="false" />
+    <NavigationProperty Name="Device" Relationship="RpiModel.DeviceControl" FromRole="RpiControl" ToRole="RpiDevice" />
+  </EntityType>
+  <Association Name="DeviceControl">
+    <End Type="RpiModel.RpiDevice" Role="RpiDevice" Multiplicity="1" />
+    <End Type="RpiModel.RpiControl" Role="RpiControl" Multiplicity="*" />
+  </Association>
+  <Association Name="DeviceData">
+    <End Type="RpiModel.RpiDevice" Role="RpiDevice" Multiplicity="1" />
+    <End Type="RpiModel.RpiDatalog" Role="RpiDatalog" Multiplicity="*" />
+  </Association>
+</Schema>

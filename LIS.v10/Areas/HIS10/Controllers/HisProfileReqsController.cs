@@ -1,0 +1,351 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using LIS.v10.Areas.HIS10.Models;
+using Microsoft.AspNet.Identity;
+
+namespace LIS.v10.Areas.HIS10.Controllers
+{
+    public class HisProfileReqsController : Controller
+    {
+        private His10DBContainer db = new His10DBContainer();
+
+        // GET: HIS10/HisProfileReqs
+
+        //public ActionResult Index()
+        //{
+        //    var hisProfileReqs = db.HisProfileReqs.Include(h => h.HisProfile).Include(h => h.HisRequest);
+        //    return View(hisProfileReqs.ToList());
+        //}
+
+        public ActionResult Index(int? RptType, int? status)
+        {
+            DateTime baseTime = DateTime.Today.AddDays(-7);
+            if (RptType == null)
+                RptType = (int)Session["RPTTYPE"];
+            else
+                Session["RPTTYPE"] = RptType;
+
+            if (status == null)
+                status = (int)Session["RPTSTATUS"];
+            else
+                Session["RPTSTATUS"] = status;
+
+            var hisProfileReqs = db.HisProfileReqs.Include(h => h.HisProfile).Include(h => h.HisRequest);
+            if (RptType==1) //All requests
+                hisProfileReqs = hisProfileReqs.Where(d => d.HisRequestId != 6).OrderBy(d => d.dtRequested);
+            if (RptType == 2) //By Schedule
+                hisProfileReqs = hisProfileReqs.Where(d => d.HisRequestId != 6).OrderBy(d => d.dtSchedule);
+            if (RptType == 3) //By Item
+                hisProfileReqs = hisProfileReqs.Where(d => d.HisRequestId != 6).OrderBy(d => d.HisProfileId);
+            if (RptType == 4) //By Latest Entries
+                 hisProfileReqs = hisProfileReqs.Where(r=> r.dtRequested > baseTime && r.HisRequestId != 6).OrderBy(d => d.dtRequested); //7 days
+            if (RptType == 5) //By Latest Requests Done
+                hisProfileReqs = hisProfileReqs.Where(r => r.dtRequested > baseTime && r.HisRequestId != 6 && r.dtPerformed != null).OrderBy(d => d.dtRequested);
+            if (RptType == 6) //By Schedule
+                hisProfileReqs = hisProfileReqs.Where(d=>d.HisRequestId == 6).OrderBy(d => d.dtRequested);
+
+            return View(hisProfileReqs.ToList());
+        }
+
+        public ActionResult TheraphyTasks(int? RptType, int? status)
+        {
+            if (RptType == null)
+                RptType = (int)Session["RPTTYPE"];
+            else
+                Session["RPTTYPE"] = RptType;
+
+            if (status == null)
+                status = (int)Session["RPTSTATUS"];
+            else
+                Session["RPTSTATUS"] = status;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                string userAccntId = User.Identity.GetUserId();
+                var therapy = db.HisIncharges.Where(d => d.AccntUserId == userAccntId).FirstOrDefault();
+                if (therapy != null)
+                {
+                    var HisProInchg = db.HisProfileIncharges.Where(d => d.HisInchargeId == therapy.Id).Select( s=> s.HisProfileId );
+                    var hisProfileReqs = db.HisProfileReqs.Include(h => h.HisProfile).Include(h => h.HisRequest)
+                        .Where( d=> HisProInchg.Contains(d.HisProfileId) );
+
+                    if(status==1)
+                        hisProfileReqs = hisProfileReqs.Where(d=>d.dtPerformed == null );
+
+                    if (RptType == 1) //All requests
+                        hisProfileReqs = hisProfileReqs.OrderBy(d => d.dtRequested);
+                    if (RptType == 2) //By Schedule
+                        hisProfileReqs = hisProfileReqs.OrderBy(d => d.dtSchedule);
+                    if (RptType == 3) //By Item
+                        hisProfileReqs = hisProfileReqs.OrderBy(d => d.HisProfileId);
+
+                    return View(hisProfileReqs.ToList());
+                }
+            }
+
+            return RedirectToAction("Login", "Account");
+        }
+
+
+        public ActionResult TaskDone(int? id)
+        {
+            var data = db.HisProfileReqs.Find(id);
+            data.dtPerformed = System.DateTime.Now;
+            db.SaveChanges();
+            return RedirectToAction("TheraphyTasks");
+        }
+        public ActionResult TaskUndone(int? id)
+        {
+            var data = db.HisProfileReqs.Find(id);
+            data.dtPerformed = null;
+            db.SaveChanges();
+            return RedirectToAction("TheraphyTasks");
+        }
+
+
+        // GET: HIS10/HisProfileReqs/Details/5
+        public ActionResult DisplayReq(string filterType, int? id)
+        {
+            List<HisProfileReq> request;
+            if (filterType == "Active")
+            {
+                request = db.HisProfileReqs
+                    .Where(s => s.HisProfileId == id
+                             && s.dtPerformed == null )
+                    .OrderByDescending(s => s.dtRequested)
+                    .Take(5)
+                    .ToList();
+            }
+            else if (filterType == "Latest5")
+            {
+
+                request = db.HisProfileReqs
+                    .Where(s => s.HisProfileId == id)
+                    .OrderByDescending(s => s.dtRequested)
+                    .Take(2)
+                    .ToList();
+
+            }
+            else if (filterType == "Latest20")
+            {
+                request = db.HisProfileReqs
+                    .Where(s => s.HisProfileId == id)
+                    .OrderByDescending(s => s.dtRequested)
+                    .Take(20)
+                    .ToList();
+            }
+            else
+            {
+                return HttpNotFound();
+            }
+
+            return View(request);
+        }
+
+        // GET: HIS10/HisProfileReqs/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            HisProfileReq hisProfileReq = db.HisProfileReqs.Find(id);
+            if (hisProfileReq == null)
+            {
+                return HttpNotFound();
+            }
+            return View(hisProfileReq);
+        }
+
+        // GET: HIS10/HisProfileReqs/Create
+        public ActionResult Create()
+        {
+
+            int iPhysician = 0;
+            if (User.Identity.IsAuthenticated)
+            {
+                string userAccntId = User.Identity.GetUserId();
+                var physician = db.HisPhysicians.Where(d => d.AccntUserId == userAccntId).FirstOrDefault();
+                if (physician != null) iPhysician = (int)physician.Id;
+            }
+            
+            var newreq = new HisProfileReq();
+            newreq.dtRequested = System.DateTime.Now;
+            newreq.dtSchedule  = System.DateTime.Now.AddDays(1);
+
+            ViewBag.HisProfileId = new SelectList(db.HisProfiles, "Id", "Name");
+            ViewBag.HisRequestId = new SelectList(db.HisRequests, "Id", "Title");
+            ViewBag.HisPhysicianId = new SelectList(db.HisPhysicians, "Id", "Name", iPhysician);
+            ViewBag.HisInchargeId = new SelectList(db.HisIncharges, "Id", "Name");
+
+            return View(newreq);
+        }
+
+        // POST: HIS10/HisProfileReqs/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,HisProfileId,HisRequestId,dtRequested,dtSchedule,dtPerformed,Remarks,HisPhysicianId,HisInchargeId")] HisProfileReq hisProfileReq, string AddRequest)
+        {
+            if (AddRequest == "Create")
+            {
+                if (ModelState.IsValid)
+                {
+                    db.HisProfileReqs.Add(hisProfileReq);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+
+                ViewBag.HisProfileId = new SelectList(db.HisProfiles, "Id", "Name", hisProfileReq.HisProfileId);
+                ViewBag.HisRequestId = new SelectList(db.HisRequests, "Id", "Title", hisProfileReq.HisRequestId);
+                ViewBag.HisPhysicianId = new SelectList(db.HisPhysicians, "Id", "Name");
+                ViewBag.HisInchargeId = new SelectList(db.HisIncharges, "Id", "Name");
+            }
+
+            if (AddRequest == "Template")
+            {
+                Session["CreateRequestHdr"] = hisProfileReq;
+                return RedirectToAction("TemplateList");
+            }
+
+            return View(hisProfileReq);
+        }
+
+
+        public ActionResult TemplateList()
+        {
+            return View(db.HisTemplateRequests);
+        }
+
+        public ActionResult UseTemplate(int? Id)
+        {
+            Models.HisProfileReq hisProfileReq = (HisProfileReq) Session["CreateRequestHdr"];
+
+            // TO-DO: add template details to profile requests
+            List<HisProfileReq> requestList = new List<HisProfileReq>();
+
+            //get details of the selected template 
+            List<HisTemplateReqItem> template = db.HisTemplateReqItems.Where(t => t.HisTemplateRequestId == (int)Id).ToList();
+
+            foreach (var tempDetails in template)
+            {
+                requestList.Add(new HisProfileReq() {
+                    HisProfileId   = hisProfileReq.HisProfileId,
+                    HisRequestId   = tempDetails.HisRequestId,
+                    dtRequested    = hisProfileReq.dtRequested,
+                    dtSchedule     = DateTime.Parse(hisProfileReq.dtSchedule.ToString()).AddDays((int)tempDetails.RefDay),
+                    dtPerformed    = hisProfileReq.dtPerformed,
+                    Remarks        = tempDetails.Remarks,
+                    HisPhysicianId = hisProfileReq.HisPhysicianId,
+                    HisInchargeId  = hisProfileReq.HisInchargeId
+                });
+            }
+
+            db.HisProfileReqs.AddRange(requestList);
+            db.SaveChanges();
+
+            Console.WriteLine("HELLO");
+
+
+            return RedirectToAction("Index", new { RptType = 6, status = 1 });
+        }
+
+        public ActionResult TemplateDetails(int? Id)
+        {
+            ViewBag.TemplateId = (int)Id;
+            return View(db.HisTemplateReqItems.Where(d => d.HisTemplateRequestId == (int)Id));
+        }
+
+        // GET: HIS10/HisProfileReqs/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            HisProfileReq hisProfileReq = db.HisProfileReqs.Find(id);
+            if (hisProfileReq == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.HisProfileId = new SelectList(db.HisProfiles, "Id", "Name", hisProfileReq.HisProfileId);
+            ViewBag.HisRequestId = new SelectList(db.HisRequests, "Id", "Title", hisProfileReq.HisRequestId);
+            ViewBag.HisPhysicianId = new SelectList(db.HisPhysicians, "Id", "Name", hisProfileReq.HisPhysicianId);
+            ViewBag.HisInchargeId = new SelectList(db.HisIncharges, "Id", "Name", hisProfileReq.HisInchargeId);
+
+            return View(hisProfileReq);
+        }
+
+        // POST: HIS10/HisProfileReqs/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,HisProfileId,HisRequestId,dtRequested,dtSchedule,dtPerformed,Remarks,HisPhysicianId,HisInchargeId")] HisProfileReq hisProfileReq)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(hisProfileReq).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            ViewBag.HisProfileId = new SelectList(db.HisProfiles, "Id", "Name", hisProfileReq.HisProfileId);
+            ViewBag.HisRequestId = new SelectList(db.HisRequests, "Id", "Title", hisProfileReq.HisRequestId);
+            ViewBag.HisPhysicianId = new SelectList(db.HisPhysicians, "Id", "Name", hisProfileReq.HisPhysicianId);
+            ViewBag.HisInchargeId = new SelectList(db.HisIncharges, "Id", "Name", hisProfileReq.HisInchargeId);
+            return View(hisProfileReq);
+        }
+
+        // GET: HIS10/HisProfileReqs/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            HisProfileReq hisProfileReq = db.HisProfileReqs.Find(id);
+            if (hisProfileReq == null)
+            {
+                return HttpNotFound();
+            }
+            return View(hisProfileReq);
+        }
+
+        // POST: HIS10/HisProfileReqs/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            HisProfileReq hisProfileReq = db.HisProfileReqs.Find(id);
+            db.HisProfileReqs.Remove(hisProfileReq);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+
+        public string hasNotif(int? id)
+        {
+            var data = db.HisNotifications.Where(s => s.RefId == id).Select(s => s.Id).FirstOrDefault();
+            string message = "id: " +id.ToString() +" data:"+data.ToString();
+            return data.ToString();
+            //return db1.getData(id);
+        }
+        
+    }
+}

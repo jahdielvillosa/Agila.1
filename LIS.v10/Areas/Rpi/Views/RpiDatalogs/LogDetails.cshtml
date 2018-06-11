@@ -1,0 +1,60 @@
+﻿@model IEnumerable<LIS.v10.Areas.Rpi.Models.LogDetailLists>
+@{
+    ViewBag.Title = "LogDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>LogDetail</h2>
+
+<div class="panel panel-default">
+    <table class="table table-listing">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Temp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Humidity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Light)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fan)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Water)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Temp)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Humidity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Light)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fan)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Water)
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+    <p>
+        @Html.ActionLink("Back to Device List", "Index", "RpiDevices", new { area = "Rpi" }, null)
+    </p>

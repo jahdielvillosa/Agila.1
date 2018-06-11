@@ -1,0 +1,43 @@
+﻿@model LIS.v10.Areas.Rpi.Models.RpiDatalog
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>RpiDatalog</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DtRead)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DtRead)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DataRead)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DataRead)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RpiDevice.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RpiDevice.Description)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

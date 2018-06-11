@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="3e983ab93e264e868aac4b0f7cfd2137" Name="Diagram1" ZoomLevel="100" >
+        <EntityTypeShape EntityType="RpiDB.RpiDevice" Width="1.5" PointX="6.625" PointY="3.625" />
+        <EntityTypeShape EntityType="RpiDB.RpiDatalog" Width="1.5" PointX="8.875" PointY="3.75" />
+        <EntityTypeShape EntityType="RpiDB.RpiControl" Width="1.5" PointX="8.875" PointY="0.75" />
+        <EntityTypeShape EntityType="RpiDB.RpiVersion" Width="1.5" PointX="4.125" PointY="3.5" />
+        <EntityTypeShape EntityType="RpiDB.RpiVersionMap" Width="1.5" PointX="1.875" PointY="3.625" />
+        <EntityTypeShape EntityType="RpiDB.RpiComponent" Width="1.5" PointX="1.875" PointY="0.625" />
+        <EntityTypeShape EntityType="RpiDB.RpiDataType" Width="1.5" PointX="4.375" PointY="0.75" />
+        <AssociationConnector Association="RpiDB.RpiDeviceRpiDatalog" />
+        <AssociationConnector Association="RpiDB.RpiDeviceRpiControl" />
+        <AssociationConnector Association="RpiDB.RpiComponentRpiVersionMap" />
+        <AssociationConnector Association="RpiDB.RpiDataTypeRpiComponent" />
+        <AssociationConnector Association="RpiDB.RpiVersionRpiDevice" />
+        <AssociationConnector Association="RpiDB.RpiVersionRpiVersionMap" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

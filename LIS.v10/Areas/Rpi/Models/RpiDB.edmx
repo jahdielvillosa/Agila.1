@@ -1,0 +1,449 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="RpiDB.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="RpiDBStoreContainer">
+    <EntitySet Name="RpiDevices" EntityType="RpiDB.Store.RpiDevices" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RpiDatalogs" EntityType="RpiDB.Store.RpiDatalogs" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RpiControls" EntityType="RpiDB.Store.RpiControls" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RpiVersions" EntityType="RpiDB.Store.RpiVersions" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RpiVersionMaps" EntityType="RpiDB.Store.RpiVersionMaps" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RpiComponents" EntityType="RpiDB.Store.RpiComponents" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RpiDataTypes" EntityType="RpiDB.Store.RpiDataTypes" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="RpiDeviceRpiDatalog" Association="RpiDB.Store.RpiDeviceRpiDatalog">
+      <End Role="RpiDevice" EntitySet="RpiDevices" />
+      <End Role="RpiDatalog" EntitySet="RpiDatalogs" />
+    </AssociationSet>
+    <AssociationSet Name="RpiDeviceRpiControl" Association="RpiDB.Store.RpiDeviceRpiControl">
+      <End Role="RpiDevice" EntitySet="RpiDevices" />
+      <End Role="RpiControl" EntitySet="RpiControls" />
+    </AssociationSet>
+    <AssociationSet Name="RpiComponentRpiVersionMap" Association="RpiDB.Store.RpiComponentRpiVersionMap">
+      <End Role="RpiComponent" EntitySet="RpiComponents" />
+      <End Role="RpiVersionMap" EntitySet="RpiVersionMaps" />
+    </AssociationSet>
+    <AssociationSet Name="RpiDataTypeRpiComponent" Association="RpiDB.Store.RpiDataTypeRpiComponent">
+      <End Role="RpiDataType" EntitySet="RpiDataTypes" />
+      <End Role="RpiComponent" EntitySet="RpiComponents" />
+    </AssociationSet>
+    <AssociationSet Name="RpiVersionRpiDevice" Association="RpiDB.Store.RpiVersionRpiDevice">
+      <End Role="RpiVersion" EntitySet="RpiVersions" />
+      <End Role="RpiDevice" EntitySet="RpiDevices" />
+    </AssociationSet>
+    <AssociationSet Name="RpiVersionRpiVersionMap" Association="RpiDB.Store.RpiVersionRpiVersionMap">
+      <End Role="RpiVersion" EntitySet="RpiVersions" />
+      <End Role="RpiVersionMap" EntitySet="RpiVersionMaps" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="RpiDevices">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RpiVersionId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RpiDatalogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DtRead" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DataRead" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RpiDeviceId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RpiControls">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DtSchedule" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Data" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RpiDeviceId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RpiVersions">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="VersionNo" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RpiVersionMaps">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NameMap" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="PinNo" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RpiComponentId" Type="int" Nullable="false" />
+    <Property Name="RpiVersionId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RpiComponents">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ComponentName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RpiDataTypeId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RpiDataTypes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <Association Name="RpiDeviceRpiDatalog">
+    <End Role="RpiDevice" Type="RpiDB.Store.RpiDevices" Multiplicity="1" />
+    <End Role="RpiDatalog" Type="RpiDB.Store.RpiDatalogs" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RpiDevice">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RpiDatalog">
+        <PropertyRef Name="RpiDeviceId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="RpiDeviceRpiControl">
+    <End Role="RpiDevice" Type="RpiDB.Store.RpiDevices" Multiplicity="1" />
+    <End Role="RpiControl" Type="RpiDB.Store.RpiControls" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RpiDevice">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RpiControl">
+        <PropertyRef Name="RpiDeviceId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="RpiComponentRpiVersionMap">
+    <End Role="RpiComponent" Type="RpiDB.Store.RpiComponents" Multiplicity="1" />
+    <End Role="RpiVersionMap" Type="RpiDB.Store.RpiVersionMaps" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RpiComponent">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RpiVersionMap">
+        <PropertyRef Name="RpiComponentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="RpiDataTypeRpiComponent">
+    <End Role="RpiDataType" Type="RpiDB.Store.RpiDataTypes" Multiplicity="1" />
+    <End Role="RpiComponent" Type="RpiDB.Store.RpiComponents" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RpiDataType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RpiComponent">
+        <PropertyRef Name="RpiDataTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="RpiVersionRpiDevice">
+    <End Role="RpiVersion" Type="RpiDB.Store.RpiVersions" Multiplicity="1" />
+    <End Role="RpiDevice" Type="RpiDB.Store.RpiDevices" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RpiVersion">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RpiDevice">
+        <PropertyRef Name="RpiVersionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="RpiVersionRpiVersionMap">
+    <End Role="RpiVersion" Type="RpiDB.Store.RpiVersions" Multiplicity="1" />
+    <End Role="RpiVersionMap" Type="RpiDB.Store.RpiVersionMaps" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RpiVersion">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RpiVersionMap">
+        <PropertyRef Name="RpiVersionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="RpiDB" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="RpiDBContainer1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="RpiDevices" EntityType="RpiDB.RpiDevice" />
+          <EntitySet Name="RpiDatalogs" EntityType="RpiDB.RpiDatalog" />
+          <EntitySet Name="RpiControls" EntityType="RpiDB.RpiControl" />
+          <EntitySet Name="RpiVersions" EntityType="RpiDB.RpiVersion" />
+          <EntitySet Name="RpiVersionMaps" EntityType="RpiDB.RpiVersionMap" />
+          <EntitySet Name="RpiComponents" EntityType="RpiDB.RpiComponent" />
+          <EntitySet Name="RpiDataTypes" EntityType="RpiDB.RpiDataType" />
+          <AssociationSet Name="RpiDeviceRpiDatalog" Association="RpiDB.RpiDeviceRpiDatalog">
+            <End Role="RpiDevice" EntitySet="RpiDevices" />
+            <End Role="RpiDatalog" EntitySet="RpiDatalogs" />
+          </AssociationSet>
+          <AssociationSet Name="RpiDeviceRpiControl" Association="RpiDB.RpiDeviceRpiControl">
+            <End Role="RpiDevice" EntitySet="RpiDevices" />
+            <End Role="RpiControl" EntitySet="RpiControls" />
+          </AssociationSet>
+          <AssociationSet Name="RpiComponentRpiVersionMap" Association="RpiDB.RpiComponentRpiVersionMap">
+            <End Role="RpiComponent" EntitySet="RpiComponents" />
+            <End Role="RpiVersionMap" EntitySet="RpiVersionMaps" />
+          </AssociationSet>
+          <AssociationSet Name="RpiDataTypeRpiComponent" Association="RpiDB.RpiDataTypeRpiComponent">
+            <End EntitySet="RpiDataTypes" Role="RpiDataType" />
+            <End EntitySet="RpiComponents" Role="RpiComponent" />
+          </AssociationSet>
+          <AssociationSet Name="RpiVersionRpiDevice" Association="RpiDB.RpiVersionRpiDevice">
+            <End Role="RpiVersion" EntitySet="RpiVersions" />
+            <End Role="RpiDevice" EntitySet="RpiDevices" />
+          </AssociationSet>
+          <AssociationSet Name="RpiVersionRpiVersionMap" Association="RpiDB.RpiVersionRpiVersionMap">
+            <End Role="RpiVersion" EntitySet="RpiVersions" />
+            <End Role="RpiVersionMap" EntitySet="RpiVersionMaps" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="RpiDevice">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="50" />
+          <NavigationProperty Name="RpiDatalogs" Relationship="RpiDB.RpiDeviceRpiDatalog" FromRole="RpiDevice" ToRole="RpiDatalog" />
+          <NavigationProperty Name="RpiControls" Relationship="RpiDB.RpiDeviceRpiControl" FromRole="RpiDevice" ToRole="RpiControl" />
+          <NavigationProperty Name="RpiVersion" Relationship="RpiDB.RpiVersionRpiDevice" FromRole="RpiDevice" ToRole="RpiVersion" />
+          <Property Name="RpiVersionId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RpiDatalog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DtRead" Type="String" Nullable="false" MaxLength="30" />
+          <Property Name="DataRead" Type="String" Nullable="false" MaxLength="100" />
+          <NavigationProperty Name="RpiDevice" Relationship="RpiDB.RpiDeviceRpiDatalog" FromRole="RpiDatalog" ToRole="RpiDevice" />
+          <Property Name="RpiDeviceId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RpiControl">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DtSchedule" Type="String" Nullable="false" MaxLength="30" />
+          <Property Name="Data" Type="String" Nullable="false" MaxLength="100" />
+          <NavigationProperty Name="RpiDevice" Relationship="RpiDB.RpiDeviceRpiControl" FromRole="RpiControl" ToRole="RpiDevice" />
+          <Property Name="RpiDeviceId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RpiVersion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VersionNo" Type="String" Nullable="false" MaxLength="10" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="100" />
+          <NavigationProperty Name="RpiDevices" Relationship="RpiDB.RpiVersionRpiDevice" FromRole="RpiVersion" ToRole="RpiDevice" />
+          <NavigationProperty Name="RpiVersionMaps" Relationship="RpiDB.RpiVersionRpiVersionMap" FromRole="RpiVersion" ToRole="RpiVersionMap" />
+        </EntityType>
+        <EntityType Name="RpiVersionMap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameMap" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="PinNo" Type="String" Nullable="false" MaxLength="3" />
+          <NavigationProperty Name="RpiComponent" Relationship="RpiDB.RpiComponentRpiVersionMap" FromRole="RpiVersionMap" ToRole="RpiComponent" />
+          <Property Name="RpiComponentId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="RpiVersion" Relationship="RpiDB.RpiVersionRpiVersionMap" FromRole="RpiVersionMap" ToRole="RpiVersion" />
+          <Property Name="RpiVersionId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RpiComponent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ComponentName" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="100" />
+          <NavigationProperty Name="RpiVersionMaps" Relationship="RpiDB.RpiComponentRpiVersionMap" FromRole="RpiComponent" ToRole="RpiVersionMap" />
+          <NavigationProperty Name="RpiDataType" Relationship="RpiDB.RpiDataTypeRpiComponent" FromRole="RpiComponent" ToRole="RpiDataType" />
+          <Property Name="RpiDataTypeId" Nullable="false" Type="Int32" />
+        </EntityType>
+        <EntityType Name="RpiDataType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="100" />
+          <NavigationProperty Name="RpiComponents" Relationship="RpiDB.RpiDataTypeRpiComponent" FromRole="RpiDataType" ToRole="RpiComponent" />
+        </EntityType>
+        <Association Name="RpiDeviceRpiDatalog">
+          <End Type="RpiDB.RpiDevice" Role="RpiDevice" Multiplicity="1" />
+          <End Type="RpiDB.RpiDatalog" Role="RpiDatalog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RpiDevice">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RpiDatalog">
+              <PropertyRef Name="RpiDeviceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RpiDeviceRpiControl">
+          <End Type="RpiDB.RpiDevice" Role="RpiDevice" Multiplicity="1" />
+          <End Type="RpiDB.RpiControl" Role="RpiControl" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RpiDevice">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RpiControl">
+              <PropertyRef Name="RpiDeviceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RpiComponentRpiVersionMap">
+          <End Type="RpiDB.RpiComponent" Role="RpiComponent" Multiplicity="1" />
+          <End Type="RpiDB.RpiVersionMap" Role="RpiVersionMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RpiComponent">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RpiVersionMap">
+              <PropertyRef Name="RpiComponentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RpiDataTypeRpiComponent">
+          <End Type="RpiDB.RpiDataType" Multiplicity="1" Role="RpiDataType" />
+          <End Type="RpiDB.RpiComponent" Multiplicity="*" Role="RpiComponent" />
+          <ReferentialConstraint>
+            <Principal Role="RpiDataType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RpiComponent">
+              <PropertyRef Name="RpiDataTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RpiVersionRpiDevice">
+          <End Type="RpiDB.RpiVersion" Role="RpiVersion" Multiplicity="1" />
+          <End Type="RpiDB.RpiDevice" Role="RpiDevice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RpiVersion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RpiDevice">
+              <PropertyRef Name="RpiVersionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RpiVersionRpiVersionMap">
+          <End Type="RpiDB.RpiVersion" Role="RpiVersion" Multiplicity="1" />
+          <End Type="RpiDB.RpiVersionMap" Role="RpiVersionMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RpiVersion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RpiVersionMap">
+              <PropertyRef Name="RpiVersionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="RpiDBStoreContainer" CdmEntityContainer="RpiDBContainer1">
+    <EntitySetMapping Name="RpiDevices">
+      <EntityTypeMapping TypeName="IsTypeOf(RpiDB.RpiDevice)">
+        <MappingFragment StoreEntitySet="RpiDevices">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="RpiVersionId" ColumnName="RpiVersionId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RpiDatalogs">
+      <EntityTypeMapping TypeName="IsTypeOf(RpiDB.RpiDatalog)">
+        <MappingFragment StoreEntitySet="RpiDatalogs">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="DtRead" ColumnName="DtRead" />
+          <ScalarProperty Name="DataRead" ColumnName="DataRead" />
+          <ScalarProperty Name="RpiDeviceId" ColumnName="RpiDeviceId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RpiControls">
+      <EntityTypeMapping TypeName="IsTypeOf(RpiDB.RpiControl)">
+        <MappingFragment StoreEntitySet="RpiControls">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="DtSchedule" ColumnName="DtSchedule" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+          <ScalarProperty Name="RpiDeviceId" ColumnName="RpiDeviceId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RpiVersions">
+      <EntityTypeMapping TypeName="IsTypeOf(RpiDB.RpiVersion)">
+        <MappingFragment StoreEntitySet="RpiVersions">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="VersionNo" ColumnName="VersionNo" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RpiVersionMaps">
+      <EntityTypeMapping TypeName="IsTypeOf(RpiDB.RpiVersionMap)">
+        <MappingFragment StoreEntitySet="RpiVersionMaps">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="NameMap" ColumnName="NameMap" />
+          <ScalarProperty Name="PinNo" ColumnName="PinNo" />
+          <ScalarProperty Name="RpiComponentId" ColumnName="RpiComponentId" />
+          <ScalarProperty Name="RpiVersionId" ColumnName="RpiVersionId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RpiComponents">
+      <EntityTypeMapping TypeName="IsTypeOf(RpiDB.RpiComponent)">
+        <MappingFragment StoreEntitySet="RpiComponents">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ComponentName" ColumnName="ComponentName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="RpiDataTypeId" ColumnName="RpiDataTypeId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RpiDataTypes">
+      <EntityTypeMapping TypeName="IsTypeOf(RpiDB.RpiDataType)">
+        <MappingFragment StoreEntitySet="RpiDataTypes">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

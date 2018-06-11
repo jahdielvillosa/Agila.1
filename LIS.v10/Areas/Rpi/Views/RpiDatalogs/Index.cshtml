@@ -1,0 +1,45 @@
+﻿@model IEnumerable<LIS.v10.Areas.Rpi.Models.RpiDatalog>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Device logs</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.DtRead)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DataRead)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RpiDevice.Description)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.DtRead)
+        </td>
+        <td  id="test">
+            @Html.DisplayFor(modelItem => item.DataRead)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RpiDevice.Description)
+        </td>
+        <td>
+            @*@Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+        </td>
+    </tr>
+}
+
+</table>

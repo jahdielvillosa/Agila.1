@@ -1,0 +1,69 @@
+﻿@model IEnumerable<LIS.v10.Areas.HIS10.Models.HisTemplateReqItem>
+
+@{
+    ViewBag.Title = "TemplateDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int templateId = (int)ViewBag.TemplateId;
+}
+
+<h2>TemplateDetails</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Remarks)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Sort)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RefDay)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RefHour)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SchedTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HisTemplateRequest.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HisRequest.Title)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Remarks)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Sort)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RefDay)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RefHour)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SchedTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HisTemplateRequest.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HisRequest.Title)
+        </td>
+    </tr>
+}
+
+</table>
+
+<p>
+    @Html.ActionLink("Use", "UseTemplate", new { id = templateId }) |
+    @Html.ActionLink("Back to List", "TemplateList")
+</p>

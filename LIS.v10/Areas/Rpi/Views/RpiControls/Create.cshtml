@@ -1,0 +1,95 @@
+﻿@model LIS.v10.Areas.Rpi.Models.DeviceSettingsDetails
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>RpiControl</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateSchedule, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.DateSchedule, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DateSchedule, "", new { @class = "text-danger" })
+            </div>
+            <p style="margin-top:5px;">(MM/dd/YYYY HH:mm:ss)</p>
+            
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TempMin, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.TempMin, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TempMin, "", new { @class = "text-danger" })
+            </div>
+            <p style="margin-top:5px;">* Degrees Celcius</p>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TempMax, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.TempMax, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TempMax, "", new { @class = "text-danger" })
+            </div>
+            <p style="margin-top:5px;">* Degrees Celcius</p>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Light, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Light, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Light, "", new { @class = "text-danger" })
+            </div>
+            <p style="margin-top:5px;">* 0=OFF, 1=ON</p>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Socket01, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Socket01, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Socket01, "", new { @class = "text-danger" })
+            </div>
+            <p style="margin-top:5px;">* 0=OFF, 1=ON</p>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Socket02, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Socket02, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Socket02, "", new { @class = "text-danger" })
+            </div>
+            <p style="margin-top:5px;">* 0=OFF, 1=ON</p>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.rpiDeviceId, "RpiDeviceId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownList("RpiDeviceId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.rpiDeviceId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<p>
+    @Html.ActionLink("Back to Device List", "Index", "RpiDevices", new { area = "Rpi" }, null)
+</p>
+
+@*<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>*@
